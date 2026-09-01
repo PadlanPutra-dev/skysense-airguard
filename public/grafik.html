@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SkySense Grafik</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link rel="stylesheet" href="css/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<input type="checkbox" id="drawerToggle" class="drawer-checkbox">
+<label for="drawerToggle" class="drawer-overlay"></label>
+
+<!-- SIDEBAR -->
+<aside class="drawer-sidebar">
+
+<div class="sidebar-header">
+<div class="logo-box">
+<i class="fa-solid fa-cloud-bolt"></i>
+<h2 class="logo">SkySense</h2>
+</div>
+<label for="drawerToggle" class="close-btn">
+<i class="fa-solid fa-xmark"></i>
+</label>
+</div>
+
+<nav>
+    <a href="index.html" class="active"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+    <a href="grafik.html"><i class="fa-solid fa-chart-line"></i> Grafik Sensor</a>
+    <a href="prediksi.html" class="active"><i class="fa-solid fa-chart-area"></i> Prediksi Suhu</a>
+    <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</a>
+    <a href="camera.html"><i class="fa-solid fa-video"></i> Profile</a>
+</nav>
+
+</aside>
+
+<div class="layout">
+
+<!-- TOPBAR -->
+<header class="topbar">
+
+<div class="header-left">
+
+<label for="drawerToggle" class="menu-btn">
+<i class="fa-solid fa-bars"></i>
+</label>
+
+<div class="top-title">
+<h1>Grafik Monitoring Sensor</h1>
+</div>
+
+</div>
+
+</header>
+
+<!-- CONTENT -->
+<main class="content">
+
+<div class="dashboard-grid">
+
+<div class="chart-grid">
+
+<div class="chart-card">
+<div class="card-header">
+<h2><i class="fa-solid fa-temperature-half"></i> Suhu</h2>
+</div>
+<div class="chart-box">
+<canvas id="chartTemp"></canvas>
+</div>
+</div>
+
+<div class="chart-card">
+<div class="card-header">
+<h2><i class="fa-solid fa-droplet"></i> Kelembapan</h2>
+</div>
+<div class="chart-box">
+<canvas id="chartHumidity"></canvas>
+</div>
+</div>
+
+<div class="chart-card">
+<div class="card-header">
+<h2><i class="fa-solid fa-wind"></i> Angin</h2>
+</div>
+<div class="chart-box">
+<canvas id="chartWind"></canvas>
+</div>
+</div>
+
+<div class="chart-card">
+<div class="card-header">
+<h2><i class="fa-solid fa-cloud-rain"></i> Hujan</h2>
+</div>
+<div class="chart-box">
+<canvas id="chartRain"></canvas>
+</div>
+</div>
+
+<div class="chart-card">
+<div class="card-header">
+<h2><i class="fa-solid fa-sun"></i> Cahaya</h2>
+</div>
+<div class="chart-box">
+<canvas id="chartLight"></canvas>
+</div>
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="js/grafik.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,355 @@
+:root {
+    --primary: #3b82f6;
+    --bg-body: #f8fafc;
+    --white: #ffffff;
+    --text-dark: #1e293b;
+    --text-gray: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+body { background: var(--bg-body); color: var(--text-dark); overflow-x: hidden; }
+
+/* --- DRAWER / SIDEBAR LOGIC --- */
+.drawer-checkbox { display: none; }
+
+/* Sidebar tersembunyi secara default (Slide Out) */
+.drawer-sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 280px; height: 100vh;
+    background: var(--white);
+    z-index: 1000; /* Paling atas */
+    transform: translateX(-100%); /* Sembunyi ke kiri */
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    padding: 25px;
+    display: flex; flex-direction: column;
+}
+
+/* Jika Checkbox dicentang, Sidebar muncul */
+#drawerToggle:checked ~ .drawer-sidebar {
+    transform: translateX(0);
+}
+
+/* Overlay Gelap saat sidebar muncul */
+.drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 900;
+    display: none; /* Sembunyi default */
+    backdrop-filter: blur(2px);
+}
+#drawerToggle:checked ~ .drawer-overlay {
+    display: block; /* Muncul saat toggle aktif */
+}
+
+/* --- SIDEBAR CONTENT --- */
+.sidebar-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 40px;
+}
+.logo-box { display: flex; align-items: center; gap: 10px; color: var(--primary); font-size: 22px; }
+.logo { font-weight: 700; color: var(--text-dark); }
+.close-btn { font-size: 20px; cursor: pointer; color: var(--text-gray); }
+
+.drawer-sidebar nav a {
+    display: flex; align-items: center; gap: 15px;
+    padding: 12px 15px; margin-bottom: 8px;
+    color: var(--text-gray); text-decoration: none;
+    border-radius: 12px; font-weight: 500; transition: 0.2s;
+}
+.drawer-sidebar nav a:hover, .drawer-sidebar nav a.active {
+    background: #eff6ff; color: var(--primary);
+}
+
+/* --- MAIN LAYOUT (FULL WIDTH) --- */
+.layout {
+    width: 100%;
+    margin-left: 0; /* Tidak ada margin karena sidebar sembunyi */
+    min-height: 100vh;
+    transition: 0.3s;
+}
+
+/* --- TOPBAR --- */
+.topbar {
+    background: var(--white);
+    padding: 15px 30px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+}
+.header-left { display: flex; align-items: center; gap: 20px; }
+
+/* Menu Btn Selalu Muncul */
+.menu-btn {
+    font-size: 22px; cursor: pointer; color: var(--text-dark);
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 8px;
+    transition: 0.2s;
+}
+.menu-btn:hover { background: #f1f5f9; }
+
+.top-title h1 { font-size: 20px; font-weight: 600; }
+.top-actions { display: flex; gap: 15px; }
+.search-box { background: var(--bg-body); padding: 8px 15px; border-radius: 20px; display: flex; gap: 10px; align-items: center; }
+.search-input { border: none; background: transparent; outline: none; }
+.toggle-theme { background: var(--bg-body); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
+
+/* --- CONTENT GRID (LAYOUT UTAMA) --- */
+.content { padding: 25px; max-width: 1600px; margin: 0 auto; }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* Kiri 40%, Kanan 60% */
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+/* KIRI: Flex Column */
+.left-section { display: flex; flex-direction: column; gap: 25px; }
+
+/* 1. HERO CARD */
+.hero-card {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: var(--white);
+    padding: 30px; border-radius: var(--radius);
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+    min-height: 180px;
+}
+.weather-detail h2 { font-size: 32px; font-weight: 600; margin-bottom: 5px; }
+.weather-detail p { opacity: 0.9; margin-bottom: 15px; }
+.location-tag { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+
+.temp-display { text-align: right; }
+.icon-large { font-size: 42px; margin-bottom: 10px; }
+.temp-display h1 { font-size: 56px; font-weight: 700; line-height: 1; display: inline-block; }
+.temp-display .unit { font-size: 24px; vertical-align: top; }
+
+/* 2. SENSOR GRID (3 Kolom x 2 Baris) */
+.sensor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    flex-grow: 1; /* Isi ruang */
+}
+.sensor-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px;
+}
+.s-icon {
+    width: 35px; height: 35px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.s-icon.red { background: #fee2e2; color: #ef4444; }
+.s-icon.blue { background: #dbeafe; color: #3b82f6; }
+.s-icon.gray { background: #f1f5f9; color: #64748b; }
+.s-icon.yellow { background: #fef9c3; color: #eab308; }
+
+.sensor-item h3 { font-size: 12px; color: var(--text-gray); font-weight: 500; }
+.sensor-item p { font-size: 16px; font-weight: 700; }
+
+/* KANAN: GRAFIK */
+.right-section { display: flex; }
+.chart-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    display: flex; flex-direction: column;
+}
+.card-header h2 { font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+.chart-box {
+    flex-grow: 1; /* Grafik mengisi tinggi penuh */
+    position: relative;
+    min-height: 350px; /* Minimal tinggi agar sejajar kiri */
+}
+
+/* BAWAH: RIWAYAT */
+.history-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+.table-responsive { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 12px; background: #f8fafc; font-size: 13px; color: var(--text-gray); border-bottom: 1px solid var(--border); }
+td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .dashboard-grid { grid-template-columns: 1fr; } /* Stack ke bawah di tablet */
+    .sensor-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+    .sensor-grid { grid-template-columns: repeat(2, 1fr); }
+    .top-actions .search-box { display: none; } /* Sembunyikan search di HP */
+}
+
+/* GRID GRAFIK */
+.chart-grid{
+display:grid;
+grid-template-columns: repeat(3,1fr);
+gap:20px;
+}
+
+/* CARD GRAFIK LEBIH KECIL */
+.chart-grid .chart-card{
+padding:15px;
+}
+
+/* HEADER GRAFIK */
+.chart-grid .card-header h2{
+font-size:14px;
+margin-bottom:10px;
+}
+
+/* UKURAN GRAFIK */
+.chart-grid .chart-box{
+position:relative;
+height:180px;
+min-height:180px;
+}
+
+/* ==========================================================
+   PREDIKSI CUACA
+   ========================================================== */
+
+.prediction-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.prediction-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+}
+
+.prediction-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.prediction-card-header i {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.prediction-card h3 {
+    font-size: 12px;
+    color: var(--text-gray);
+    font-weight: 500;
+}
+
+.prediction-value {
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.prediction-unit {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-left: 3px;
+}
+
+/* STATUS PREDIKSI */
+
+.prediction-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.prediction-status-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.prediction-status-left i {
+    color: var(--primary);
+}
+
+.prediction-status h3 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.prediction-status p {
+    font-size: 12px;
+    color: var(--text-gray);
+}
+
+/* SELECT PERIODE */
+
+.prediction-filter {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.prediction-filter select {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .prediction-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .prediction-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .prediction-status {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+}

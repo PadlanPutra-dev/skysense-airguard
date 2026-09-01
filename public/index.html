@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkySense Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<input type="checkbox" id="drawerToggle" class="drawer-checkbox">
+<label for="drawerToggle" class="drawer-overlay"></label>
+
+<aside class="drawer-sidebar">
+    <div class="sidebar-header">
+        <div class="logo-box">
+            <i class="fa-solid fa-cloud-bolt"></i>
+            <h2 class="logo">SkySense</h2>
+        </div>
+        <label for="drawerToggle" class="close-btn"><i class="fa-solid fa-xmark"></i></label>
+    </div>
+
+    <nav>
+        <a href="index.html" class="active"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+        <a href="grafik.html"><i class="fa-solid fa-chart-line"></i> Grafik Sensor</a>
+        <a href="prediksi.html" class="active"><i class="fa-solid fa-chart-area"></i> Prediksi Suhu</a>
+        <a href="riwayat.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</a>
+        <a href="camera.html"><i class="fa-solid fa-video"></i> Profile</a>
+    </nav>
+</aside>
+
+<div class="layout">
+
+    <header class="topbar">
+        <div class="header-left">
+            <label for="drawerToggle" class="menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </label>
+            <div class="top-title">
+                <h1>Dashboard Monitoring</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <div class="dashboard-grid">
+            
+            <div class="left-section">
+                <section class="hero-card">
+                    <div class="weather-detail">
+                        <h2 id="currentTime">--:--</h2>
+                        <p id="currentStatus">Memuat Data...</p>
+                    </div>
+                    <div class="temp-display">
+                        <i class="fa-solid fa-cloud-sun icon-large"></i>
+                        <div>
+                            <h1 id="currentTemp">--</h1><span class="unit">°C</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="sensor-grid">
+                    <div class="sensor-item">
+                        <div class="s-icon red"><i class="fa-solid fa-temperature-half"></i></div>
+                        <div><h3>Suhu</h3><p id="temperature">--°C</p></div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="s-icon blue"><i class="fa-solid fa-droplet"></i></div>
+                        <div><h3>Lembap</h3><p id="humidity">--%</p></div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="s-icon gray"><i class="fa-regular fa-compass"></i></div>
+                        <div><h3>Arah</h3><p id="arahangin">--</p></div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="s-icon gray"><i class="fa-solid fa-wind"></i></div>
+                        <div><h3>Speed</h3><p id="wind">--m/s</p></div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="s-icon blue"><i class="fa-solid fa-cloud-showers-heavy"></i></div>
+                        <div><h3>Hujan</h3><p id="rainfall">--mm</p></div>
+                    </div>
+                    <div class="sensor-item">
+                        <div class="s-icon yellow"><i class="fa-regular fa-sun"></i></div>
+                        <div><h3>Cahaya</h3><p id="light">--lx</p></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="right-section">
+                <section class="chart-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-line"></i> Grafik Sensor</h2>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="sensorChart"></canvas>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+
+        <section class="history-card">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-list"></i> Riwayat Data Terkini</h2>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Suhu</th>
+                            <th>Lembap</th>
+                            <th>Angin</th>
+                            <th>Hujan</th>
+                            <th>Cahaya</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

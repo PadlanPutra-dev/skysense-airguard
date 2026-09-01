@@ -1,0 +1,25 @@
+# Node.js
+node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Environment
+.env
+.env.*
+
+# Python cache
+ml/**/__pycache__/
+
+# Temporary files
+*.log
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+~$*.xlsx
+~$*.xls
