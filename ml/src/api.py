@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from pathlib import Path
 
-from src.predictor import SkySensePredictor
+from ml.src.predictor import SkySensePredictor
 
 
 # ==========================================================
