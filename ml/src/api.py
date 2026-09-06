@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from pathlib import Path
+from datetime import datetime
 
 from ml.src.predictor import SkySensePredictor
 
@@ -12,7 +13,7 @@ from ml.src.predictor import SkySensePredictor
 
 app = FastAPI(
     title="SkySense Weather Prediction API",
-    description="API prediksi cuaca menggunakan Random Forest",
+    description="API prediksi cuaca menggunakan machine learning",
     version="1.0.0"
 )
 
@@ -55,10 +56,37 @@ try:
 
     WEATHER_DATA = pd.read_excel(DATA_PATH)
 
+    # Pastikan data terurut berdasarkan tanggal
+    if "TANGGAL" in WEATHER_DATA.columns:
+
+        WEATHER_DATA["TANGGAL"] = pd.to_datetime(
+            WEATHER_DATA["TANGGAL"],
+            errors="coerce"
+        )
+
+        WEATHER_DATA = (
+            WEATHER_DATA
+            .dropna(subset=["TANGGAL"])
+            .sort_values("TANGGAL")
+            .reset_index(drop=True)
+        )
+
     print(
         f"Dataset berhasil dimuat: "
         f"{len(WEATHER_DATA)} baris"
     )
+
+    if "TANGGAL" in WEATHER_DATA.columns:
+
+        print(
+            f"Data pertama : "
+            f"{WEATHER_DATA.iloc[0]['TANGGAL'].strftime('%Y-%m-%d')}"
+        )
+
+        print(
+            f"Data terakhir : "
+            f"{WEATHER_DATA.iloc[-1]['TANGGAL'].strftime('%Y-%m-%d')}"
+        )
 
 except Exception as e:
 
@@ -71,9 +99,17 @@ except Exception as e:
 # LOAD PREDICTOR
 # ==========================================================
 
-predictor = SkySensePredictor()
+try:
 
-print("Predictor berhasil dimuat.")
+    predictor = SkySensePredictor()
+
+    print("Predictor berhasil dimuat.")
+
+except Exception as e:
+
+    print("Gagal memuat predictor:", e)
+
+    predictor = None
 
 
 # ==========================================================
@@ -120,6 +156,13 @@ def forecast(
         }
 
 
+    if predictor is None:
+
+        return {
+            "error": "Predictor tidak berhasil dimuat."
+        }
+
+
     if len(WEATHER_DATA) < 7:
 
         return {
@@ -135,10 +178,45 @@ def forecast(
 
 
     # ------------------------------------------------------
+    # DATA TERAKHIR
+    # ------------------------------------------------------
+
+    try:
+
+        if "TANGGAL" in history.columns:
+
+            last_data_date = pd.to_datetime(
+                history.iloc[-1]["TANGGAL"]
+            )
+
+        else:
+
+            last_data_date = pd.Timestamp(
+                year=int(history.iloc[-1]["TAHUN"]),
+                month=int(history.iloc[-1]["BULAN"]),
+                day=int(history.iloc[-1]["HARI"])
+            )
+
+    except Exception as e:
+
+        print("Date Error:", e)
+
+        return {
+            "error": "Gagal membaca tanggal data terakhir.",
+            "detail": str(e)
+        }
+
+
+    # ------------------------------------------------------
     # FORECAST
     # ------------------------------------------------------
 
     try:
+
+        print(
+            f"Data terakhir: "
+            f"{last_data_date.strftime('%Y-%m-%d')}"
+        )
 
         print(
             f"Menghitung forecast {days} hari..."
@@ -160,6 +238,21 @@ def forecast(
 
 
     # ------------------------------------------------------
+    # FORECAST PERIOD
+    # ------------------------------------------------------
+
+    if result:
+
+        first_forecast_date = result[0].get("TANGGAL")
+        last_forecast_date = result[-1].get("TANGGAL")
+
+    else:
+
+        first_forecast_date = None
+        last_forecast_date = None
+
+
+    # ------------------------------------------------------
     # RESPONSE
     # ------------------------------------------------------
 
@@ -167,17 +260,43 @@ def forecast(
 
         "source": "BMKG Dataset",
 
-        "history_used": len(history),
+        "data_status": "historical_dataset",
 
-        "forecast_days": days,
+        "last_data_date":
+            last_data_date.strftime("%Y-%m-%d"),
 
-        "forecast": result
+        "first_forecast_date":
+            first_forecast_date,
+
+        "last_forecast_date":
+            last_forecast_date,
+
+        "history_used":
+            len(history),
+
+        "forecast_days":
+            len(result),
+
+        "generated_at":
+            datetime.now().isoformat(),
+
+        "forecast":
+            result
 
     }
 
 
     print(
-        f"Forecast berhasil: {len(result)} hari"
+        f"Forecast berhasil: "
+        f"{len(result)} hari"
     )
+
+    print(
+        f"Periode forecast: "
+        f"{first_forecast_date} "
+        f"sampai "
+        f"{last_forecast_date}"
+    )
+
 
     return response

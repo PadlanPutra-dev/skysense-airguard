@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Prediksi Suhu | SkySense</title>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Prediksi Cuaca | SkySense</title>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -17,29 +22,55 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     >
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
 </head>
+
 
 <body>
 
-    <input type="checkbox" id="drawerToggle" class="drawer-checkbox">
 
-    <label for="drawerToggle" class="drawer-overlay"></label>
+    <input
+        type="checkbox"
+        id="drawerToggle"
+        class="drawer-checkbox"
+    >
+
+
+    <label
+        for="drawerToggle"
+        class="drawer-overlay"
+    ></label>
 
 
     <!-- SIDEBAR -->
+
     <aside class="drawer-sidebar">
 
         <div class="sidebar-header">
 
             <div class="logo-box">
+
                 <i class="fa-solid fa-cloud-bolt"></i>
-                <h2 class="logo">SkySense</h2>
+
+                <h2 class="logo">
+                    SkySense
+                </h2>
+
             </div>
 
-            <label for="drawerToggle" class="close-btn">
+
+            <label
+                for="drawerToggle"
+                class="close-btn"
+            >
                 <i class="fa-solid fa-xmark"></i>
             </label>
 
@@ -49,23 +80,41 @@
         <nav>
 
             <a href="index.html">
+
                 <i class="fa-solid fa-table-columns"></i>
+
                 Dashboard
+
             </a>
+
 
             <a href="grafik.html">
+
                 <i class="fa-solid fa-chart-line"></i>
+
                 Grafik Sensor
+
             </a>
 
-            <a href="prediksi.html" class="active">
+
+            <a
+                href="prediksi.html"
+                class="active"
+            >
+
                 <i class="fa-solid fa-chart-area"></i>
-                Prediksi Suhu
+
+                Prediksi Cuaca
+
             </a>
+
 
             <a href="riwayat.html">
+
                 <i class="fa-solid fa-clock-rotate-left"></i>
+
                 Riwayat
+
             </a>
 
         </nav>
@@ -74,20 +123,32 @@
 
 
     <!-- MAIN LAYOUT -->
+
     <div class="layout">
 
 
         <!-- TOPBAR -->
+
         <header class="topbar">
 
             <div class="header-left">
 
-                <label for="drawerToggle" class="menu-btn">
+                <label
+                    for="drawerToggle"
+                    class="menu-btn"
+                >
+
                     <i class="fa-solid fa-bars"></i>
+
                 </label>
 
+
                 <div class="top-title">
-                    <h1>Prediksi Suhu</h1>
+
+                    <h1>
+                        Prediksi Cuaca
+                    </h1>
+
                 </div>
 
             </div>
@@ -96,25 +157,30 @@
 
 
         <!-- CONTENT -->
+
         <main class="content">
 
 
             <!-- PREDICTION CARD -->
+
             <div class="chart-card">
 
 
-                <!-- HEADER -->
                 <div class="card-header">
 
                     <h2>
+
                         <i class="fa-solid fa-chart-area"></i>
+
                         Prediksi Cuaca
+
                     </h2>
 
                 </div>
 
 
                 <!-- CONTROL -->
+
                 <div
                     style="
                         display:flex;
@@ -164,19 +230,70 @@
 
                     </select>
 
+
+                    <label
+                        for="parameter"
+                        style="
+                            font-size:14px;
+                            font-weight:500;
+                            margin-left:10px;
+                        "
+                    >
+                        Parameter Grafik
+                    </label>
+
+
+                    <select
+                        id="parameter"
+                        style="
+                            padding:9px 14px;
+                            border-radius:8px;
+                            border:1px solid #e2e8f0;
+                            background:#ffffff;
+                            color:#1e293b;
+                            font-family:Poppins,sans-serif;
+                            cursor:pointer;
+                            outline:none;
+                        "
+                    >
+
+                        <option value="temperature">
+                            Suhu
+                        </option>
+
+                        <option value="humidity">
+                            Kelembapan
+                        </option>
+
+                        <option value="rain">
+                            Curah Hujan
+                        </option>
+
+                        <option value="sunshine">
+                            Penyinaran Matahari
+                        </option>
+
+                        <option value="wind">
+                            Kecepatan Angin
+                        </option>
+
+                    </select>
+
                 </div>
 
 
                 <!-- STATUS -->
+
                 <div
                     id="statusPrediksi"
                     style="
                         margin-bottom:15px;
-                        padding:10px 15px;
+                        padding:12px 15px;
                         border-radius:10px;
                         background:#eff6ff;
                         color:#2563eb;
                         font-size:13px;
+                        line-height:1.8;
                     "
                 >
                     Memuat data prediksi...
@@ -184,6 +301,7 @@
 
 
                 <!-- CHART -->
+
                 <div
                     class="chart-box"
                     style="
@@ -201,6 +319,7 @@
 
 
             <!-- TABLE -->
+
             <div
                 class="chart-card"
                 style="margin-top:25px;"
@@ -209,8 +328,11 @@
                 <div class="card-header">
 
                     <h2>
+
                         <i class="fa-solid fa-table"></i>
+
                         Detail Prediksi
+
                     </h2>
 
                 </div>
@@ -225,10 +347,22 @@
                             <tr>
 
                                 <th>Tanggal</th>
-                                <th>TN</th>
-                                <th>TX</th>
-                                <th>TAVG</th>
-                                <th>RH</th>
+
+                                <th>TN (°C)</th>
+
+                                <th>TX (°C)</th>
+
+                                <th>TAVG (°C)</th>
+
+                                <th>RH (%)</th>
+
+                                <th>RR (mm)</th>
+
+                                <th>SS (jam)</th>
+
+                                <th>FF_X</th>
+
+                                <th>FF_AVG</th>
 
                             </tr>
 
@@ -240,8 +374,11 @@
                             <tr>
 
                                 <td
-                                    colspan="5"
-                                    style="text-align:center;"
+                                    colspan="9"
+                                    style="
+                                        text-align:center;
+                                        padding:20px;
+                                    "
                                 >
                                     Memuat data...
                                 </td>

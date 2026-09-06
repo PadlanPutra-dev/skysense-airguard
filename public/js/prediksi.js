@@ -8,34 +8,119 @@ let predictionChart = null;
 
 
 // ==========================================================
+// PARAMETER CONFIG
+// ==========================================================
+
+const PARAMETER_CONFIG = {
+
+    temperature: {
+        labels: [
+            "TN",
+            "TAVG",
+            "TX"
+        ],
+        fields: [
+            "TN",
+            "TAVG",
+            "TX"
+        ],
+        unit: "°C",
+        title: "Suhu"
+    },
+
+    humidity: {
+        labels: [
+            "RH_AVG"
+        ],
+        fields: [
+            "RH_AVG"
+        ],
+        unit: "%",
+        title: "Kelembapan"
+    },
+
+    rain: {
+        labels: [
+            "RR"
+        ],
+        fields: [
+            "RR"
+        ],
+        unit: "mm",
+        title: "Curah Hujan"
+    },
+
+    sunshine: {
+        labels: [
+            "SS"
+        ],
+        fields: [
+            "SS"
+        ],
+        unit: "jam",
+        title: "Penyinaran Matahari"
+    },
+
+    wind: {
+        labels: [
+            "FF_AVG",
+            "FF_X"
+        ],
+        fields: [
+            "FF_AVG",
+            "FF_X"
+        ],
+        unit: "",
+        title: "Kecepatan Angin"
+    }
+
+};
+
+
+// ==========================================================
 // LOAD PREDICTION
 // ==========================================================
 
 async function loadPrediction(days) {
 
     const status =
-        document.getElementById("statusPrediksi");
+        document.getElementById(
+            "statusPrediksi"
+        );
+
 
     const table =
-        document.getElementById("predictionTable");
+        document.getElementById(
+            "predictionTable"
+        );
 
 
     try {
+
 
         // --------------------------------------------------
         // LOADING
         // --------------------------------------------------
 
-        status.textContent =
+        status.innerHTML =
             `Mengambil prediksi ${days} hari dari model...`;
 
-        status.style.background = "#eff6ff";
-        status.style.color = "#2563eb";
+        status.style.background =
+            "#eff6ff";
+
+        status.style.color =
+            "#2563eb";
 
 
         table.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align:center;padding:20px;">
+                <td
+                    colspan="9"
+                    style="
+                        text-align:center;
+                        padding:20px;
+                    "
+                >
                     Memuat data prediksi...
                 </td>
             </tr>
@@ -64,10 +149,6 @@ async function loadPrediction(days) {
             await fetch(url);
 
 
-        // --------------------------------------------------
-        // CHECK RESPONSE
-        // --------------------------------------------------
-
         if (!response.ok) {
 
             throw new Error(
@@ -89,6 +170,20 @@ async function loadPrediction(days) {
             "Data prediksi:",
             data
         );
+
+
+        // --------------------------------------------------
+        // API ERROR
+        // --------------------------------------------------
+
+        if (data.error) {
+
+            throw new Error(
+                data.detail ||
+                data.error
+            );
+
+        }
 
 
         // --------------------------------------------------
@@ -117,14 +212,53 @@ async function loadPrediction(days) {
 
 
         // --------------------------------------------------
+        // DATE INFORMATION
+        // --------------------------------------------------
+
+        const lastDataDate =
+            data.last_data_date
+                ? formatDate(data.last_data_date)
+                : "-";
+
+
+        const firstForecastDate =
+            data.first_forecast_date
+                ? formatDate(data.first_forecast_date)
+                : "-";
+
+
+        const lastForecastDate =
+            data.last_forecast_date
+                ? formatDate(data.last_forecast_date)
+                : "-";
+
+
+        // --------------------------------------------------
         // STATUS SUCCESS
         // --------------------------------------------------
 
-        status.textContent =
-            `Prediksi ${forecast.length} hari berhasil dimuat. Sumber: ${data.source}`;
+        status.innerHTML = `
+            <strong>
+                Prediksi ${forecast.length} hari berhasil dimuat
+            </strong>
+            <br>
+            Data terakhir:
+            ${lastDataDate}
+            <br>
+            Periode prediksi:
+            ${firstForecastDate}
+            - ${lastForecastDate}
+            <br>
+            Sumber:
+            ${escapeHTML(data.source || "Unknown")}
+        `;
 
-        status.style.background = "#ecfdf5";
-        status.style.color = "#16a34a";
+
+        status.style.background =
+            "#ecfdf5";
+
+        status.style.color =
+            "#16a34a";
 
 
         // --------------------------------------------------
@@ -157,11 +291,25 @@ async function loadPrediction(days) {
         // ERROR STATUS
         // --------------------------------------------------
 
-        status.textContent =
-            "Gagal mengambil data prediksi dari FastAPI.";
+        status.innerHTML = `
+            <strong>
+                Gagal mengambil data prediksi.
+            </strong>
+            <br>
+            ${escapeHTML(error.message)}
+            <br>
+            <small>
+                Pastikan FastAPI berjalan di
+                ${escapeHTML(API_URL)}
+            </small>
+        `;
 
-        status.style.background = "#fee2e2";
-        status.style.color = "#dc2626";
+
+        status.style.background =
+            "#fee2e2";
+
+        status.style.color =
+            "#dc2626";
 
 
         // --------------------------------------------------
@@ -171,7 +319,7 @@ async function loadPrediction(days) {
         table.innerHTML = `
             <tr>
                 <td
-                    colspan="5"
+                    colspan="9"
                     style="
                         text-align:center;
                         padding:20px;
@@ -179,11 +327,6 @@ async function loadPrediction(days) {
                     "
                 >
                     Gagal mengambil data prediksi.
-                    <br>
-                    <small>
-                        Pastikan FastAPI sedang berjalan di
-                        ${API_URL}
-                    </small>
                 </td>
             </tr>
         `;
@@ -197,7 +340,10 @@ async function loadPrediction(days) {
 // CREATE CHART
 // ==========================================================
 
-function createPredictionChart(forecast) {
+function createPredictionChart(
+    forecast
+) {
+
 
     const canvas =
         document.getElementById(
@@ -234,34 +380,108 @@ function createPredictionChart(forecast) {
 
 
     // ------------------------------------------------------
+    // PARAMETER SELECTED
+    // ------------------------------------------------------
+
+    const parameterElement =
+        document.getElementById(
+            "parameter"
+        );
+
+
+    const selectedParameter =
+        parameterElement
+            ? parameterElement.value
+            : "temperature";
+
+
+    const config =
+        PARAMETER_CONFIG[
+            selectedParameter
+        ];
+
+
+    // ------------------------------------------------------
     // LABELS
     // ------------------------------------------------------
 
     const labels =
         forecast.map(
-            item => formatDate(item.TANGGAL)
+            item =>
+                formatDate(
+                    item.TANGGAL
+                )
         );
 
 
     // ------------------------------------------------------
-    // DATA
+    // DATASET
     // ------------------------------------------------------
 
-    const tn =
-        forecast.map(
-            item => Number(item.TN)
-        );
+    const datasets =
+        config.fields.map(
+            (field, index) => {
+
+                const datasetData =
+                    forecast.map(
+                        item => {
+
+                            const value =
+                                Number(
+                                    item[field]
+                                );
+
+                            return Number.isFinite(value)
+                                ? value
+                                : null;
+
+                        }
+                    );
 
 
-    const tavg =
-        forecast.map(
-            item => Number(item.TAVG)
-        );
+                const colors = [
+                    "#3b82f6",
+                    "#22c55e",
+                    "#ef4444"
+                ];
 
 
-    const tx =
-        forecast.map(
-            item => Number(item.TX)
+                return {
+
+                    label:
+                        config.labels[index],
+
+                    data:
+                        datasetData,
+
+                    borderColor:
+                        colors[index % colors.length],
+
+                    backgroundColor:
+                        colors[index % colors.length],
+
+                    borderWidth:
+                        index === 1
+                            ? 3
+                            : 2,
+
+                    pointRadius:
+                        forecast.length > 30
+                            ? 0
+                            : 3,
+
+                    pointHoverRadius:
+                        5,
+
+                    tension:
+                        0.35,
+
+                    fill:
+                        false
+
+                };
+
+            }
         );
 
 
@@ -274,113 +494,37 @@ function createPredictionChart(forecast) {
             ctx,
             {
 
-                type: "line",
+                type:
+                    "line",
 
 
                 data: {
 
-                    labels: labels,
+                    labels:
+                        labels,
 
-
-                    datasets: [
-
-                        {
-
-                            label: "TN",
-
-                            data: tn,
-
-                            borderColor: "#3b82f6",
-
-                            backgroundColor:
-                                "rgba(59,130,246,0.1)",
-
-                            borderWidth: 2,
-
-                            pointRadius:
-                                forecast.length > 30
-                                    ? 0
-                                    : 3,
-
-                            pointHoverRadius: 5,
-
-                            tension: 0.35,
-
-                            fill: false
-
-                        },
-
-
-                        {
-
-                            label: "TAVG",
-
-                            data: tavg,
-
-                            borderColor: "#22c55e",
-
-                            backgroundColor:
-                                "rgba(34,197,94,0.1)",
-
-                            borderWidth: 3,
-
-                            pointRadius:
-                                forecast.length > 30
-                                    ? 0
-                                    : 3,
-
-                            pointHoverRadius: 5,
-
-                            tension: 0.35,
-
-                            fill: false
-
-                        },
-
-
-                        {
-
-                            label: "TX",
-
-                            data: tx,
-
-                            borderColor: "#ef4444",
-
-                            backgroundColor:
-                                "rgba(239,68,68,0.1)",
-
-                            borderWidth: 2,
-
-                            pointRadius:
-                                forecast.length > 30
-                                    ? 0
-                                    : 3,
-
-                            pointHoverRadius: 5,
-
-                            tension: 0.35,
-
-                            fill: false
-
-                        }
-
-                    ]
+                    datasets:
+                        datasets
 
                 },
 
 
                 options: {
 
-                    responsive: true,
+                    responsive:
+                        true,
 
-                    maintainAspectRatio: false,
+                    maintainAspectRatio:
+                        false,
 
 
                     interaction: {
 
-                        intersect: false,
+                        intersect:
+                            false,
 
-                        mode: "index"
+                        mode:
+                            "index"
 
                     },
 
@@ -389,16 +533,30 @@ function createPredictionChart(forecast) {
 
                         legend: {
 
-                            display: true,
+                            display:
+                                true,
 
-                            position: "top"
+                            position:
+                                "top"
+
+                        },
+
+
+                        title: {
+
+                            display:
+                                true,
+
+                            text:
+                                `Prediksi ${config.title}`
 
                         },
 
 
                         tooltip: {
 
-                            enabled: true,
+                            enabled:
+                                true,
 
 
                             callbacks: {
@@ -406,13 +564,29 @@ function createPredictionChart(forecast) {
                                 label:
                                     function(context) {
 
+                                        const value =
+                                            Number(
+                                                context.parsed.y
+                                            );
+
+
+                                        const formatted =
+                                            Number.isFinite(value)
+                                                ? value.toFixed(2)
+                                                : "-";
+
+
+                                        const unit =
+                                            config.unit
+                                                ? ` ${config.unit}`
+                                                : "";
+
+
                                         return (
                                             context.dataset.label +
                                             ": " +
-                                            Number(
-                                                context.parsed.y
-                                            ).toFixed(2) +
-                                            " °C"
+                                            formatted +
+                                            unit
                                         );
 
                                     }
@@ -430,9 +604,11 @@ function createPredictionChart(forecast) {
 
                             title: {
 
-                                display: true,
+                                display:
+                                    true,
 
-                                text: "Tanggal"
+                                text:
+                                    "Tanggal"
 
                             },
 
@@ -455,9 +631,13 @@ function createPredictionChart(forecast) {
 
                             title: {
 
-                                display: true,
+                                display:
+                                    true,
 
-                                text: "Suhu (°C)"
+                                text:
+                                    config.unit
+                                        ? `${config.title} (${config.unit})`
+                                        : config.title
 
                             }
 
@@ -477,7 +657,10 @@ function createPredictionChart(forecast) {
 // CREATE TABLE
 // ==========================================================
 
-function createPredictionTable(forecast) {
+function createPredictionTable(
+    forecast
+) {
+
 
     const table =
         document.getElementById(
@@ -491,8 +674,11 @@ function createPredictionTable(forecast) {
     forecast.forEach(
         item => {
 
+
             const row =
-                document.createElement("tr");
+                document.createElement(
+                    "tr"
+                );
 
 
             row.innerHTML = `
@@ -502,25 +688,49 @@ function createPredictionTable(forecast) {
                 </td>
 
                 <td>
-                    ${Number(item.TN).toFixed(2)} °C
+                    ${formatNumber(item.TN)}
+                    °C
                 </td>
 
                 <td>
-                    ${Number(item.TX).toFixed(2)} °C
+                    ${formatNumber(item.TX)}
+                    °C
                 </td>
 
                 <td>
-                    ${Number(item.TAVG).toFixed(2)} °C
+                    ${formatNumber(item.TAVG)}
+                    °C
                 </td>
 
                 <td>
-                    ${Number(item.RH_AVG).toFixed(2)} %
+                    ${formatNumber(item.RH_AVG)}
+                    %
+                </td>
+
+                <td>
+                    ${formatNumber(item.RR)}
+                    mm
+                </td>
+
+                <td>
+                    ${formatNumber(item.SS)}
+                    jam
+                </td>
+
+                <td>
+                    ${formatNumber(item.FF_X)}
+                </td>
+
+                <td>
+                    ${formatNumber(item.FF_AVG)}
                 </td>
 
             `;
 
 
-            table.appendChild(row);
+            table.appendChild(
+                row
+            );
 
         }
     );
@@ -529,15 +739,64 @@ function createPredictionTable(forecast) {
 
 
 // ==========================================================
+// FORMAT NUMBER
+// ==========================================================
+
+function formatNumber(
+    value
+) {
+
+    const number =
+        Number(value);
+
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return "-";
+
+    }
+
+
+    return number.toFixed(2);
+
+}
+
+
+// ==========================================================
 // FORMAT DATE
 // ==========================================================
 
-function formatDate(dateString) {
+function formatDate(
+    dateString
+) {
+
+
+    if (
+        !dateString
+    ) {
+
+        return "-";
+
+    }
+
 
     const date =
         new Date(
-            dateString + "T00:00:00"
+            `${dateString}T00:00:00`
         );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return dateString;
+
+    }
 
 
     return date.toLocaleDateString(
@@ -553,6 +812,39 @@ function formatDate(dateString) {
 
 
 // ==========================================================
+// ESCAPE HTML
+// ==========================================================
+
+function escapeHTML(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// ==========================================================
 // PERIOD CHANGE
 // ==========================================================
 
@@ -560,9 +852,16 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
+
         const periode =
             document.getElementById(
                 "periode"
+            );
+
+
+        const parameter =
+            document.getElementById(
+                "parameter"
             );
 
 
@@ -578,7 +877,7 @@ document.addEventListener(
 
 
         // --------------------------------------------------
-        // DEFAULT
+        // INITIAL LOAD
         // --------------------------------------------------
 
         const initialDays =
@@ -593,12 +892,13 @@ document.addEventListener(
 
 
         // --------------------------------------------------
-        // CHANGE
+        // PERIOD CHANGE
         // --------------------------------------------------
 
         periode.addEventListener(
             "change",
             function() {
+
 
                 const days =
                     Number(
@@ -619,6 +919,34 @@ document.addEventListener(
 
             }
         );
+
+
+        // --------------------------------------------------
+        // PARAMETER CHANGE
+        // --------------------------------------------------
+
+        if (parameter) {
+
+            parameter.addEventListener(
+                "change",
+                function() {
+
+                    console.log(
+                        "Parameter berubah:",
+                        this.value
+                    );
+
+
+                    loadPrediction(
+                        Number(
+                            periode.value
+                        )
+                    );
+
+                }
+            );
+
+        }
 
     }
 );
